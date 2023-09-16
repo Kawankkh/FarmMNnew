@@ -25,12 +25,24 @@ def farmmer(request):
     else:
         return redirect('signin')
     return render(request, "authentication/farmmer.html")
+def farmmerdetail(request):
+    if request.user.is_authenticated:
+        pass
+    else:
+        return redirect('signin')
+    return render(request, "authentication/farmmerdetail.html")
 def customer(request):
     if request.user.is_authenticated:
         pass
     else:
         return redirect('signin')
     return render(request, "authentication/customer.html")
+def stock_item(request):
+    if request.user.is_authenticated:
+        pass
+    else:
+        return redirect('signin')
+    return render(request, "authentication/stock_item.html")
 def dashborad(request):
     if request.user.is_authenticated:
         pass

@@ -7,19 +7,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Mazer Admin Dashboard</title>
 
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'assets/css/bootstrap.css' %}">
+    <!-- <link rel="preconnect" href="https://fonts.gstatic.com"> -->
+    <!-- <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet"> -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;700&display=swap" rel="stylesheet">
 
+    <link rel="stylesheet" href="{% static 'assets/css/bootstrap.css' %}">
+    <link rel="stylesheet" href="{% static 'css/custom.css' %}">
     <link rel="stylesheet" href="{% static 'assets/vendors/iconly/bold.css' %}">
 
     <link rel="stylesheet" href="{% static 'assets/vendors/perfect-scrollbar/perfect-scrollbar.css' %}">
     <link rel="stylesheet" href="{% static 'assets/vendors/bootstrap-icons/bootstrap-icons.css' %}">
     <link rel="stylesheet" href="{% static 'assets/css/app.css' %}">
     <link rel="shortcut icon" href="{% static 'assets/images/favicon.svg" type="image/x-icon' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/2.1.3/TweenMax.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    
+ 
+
 </head>
+<style>
+    *{
+        font-family: 'Noto Sans Thai', sans-serif;
+    }
+</style>
 
 <body>
     <div id="app wrapper">
@@ -62,6 +75,12 @@
                                 <span>เมนูลูกค้า</span>
                             </a>
                         </li>
+                        <li class="sidebar-item">
+                            <a href="/stock_item" class='sidebar-link'>
+                                <i class="bi bi-grid-fill"></i>
+                                <span>รายการสิ่งของ(ปุ๋ย/ยา)</span>
+                            </a>
+                        </li>
                         <li class="sidebar-item  has-sub">
                             <a href="#" class="sidebar-link">
                                 <i class="bi bi-pentagon-fill"></i>
@@ -92,8 +111,12 @@
 
     <script src="{% static 'assets/vendors/apexcharts/apexcharts.js' %}"></script>
     <script src="{% static 'assets/js/pages/dashboard.js' %}"></script>
-
-    <script src="{% static 'assets/js/main.js' %}"></script>
+   
+    <script src="{% static 'js/main.js' %}"></script>
+    <script src="{% static 'js/alert.js' %}"></script>
+    <script src="{% static 'js/summation.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
 </body>
 
 </html>

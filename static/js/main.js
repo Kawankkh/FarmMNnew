@@ -68,3 +68,40 @@
     
 
 })(jQuery);
+
+ /*==================================================================
+    [ Date Picker ]*/
+
+    let startDate = document.getElementById('startDate')
+    let endDate = document.getElementById('endDate')
+    
+    startDate.addEventListener('change',(e)=>{
+      let startDateVal = e.target.value
+      document.getElementById('startDateSelected').innerText = startDateVal
+    });
+    
+    endDate.addEventListener('change',(e)=>{
+      let endDateVal = e.target.value
+      document.getElementById('endDateSelected').innerText = endDateVal
+    });
+
+
+    //validate
+    (function () {
+        'use strict';
+        window.addEventListener('load', function () {
+          // Fetch all the forms we want to apply custom Bootstrap validation styles to
+          var forms = document.getElementsByClassName('needs-validation');
+          // Loop over them and prevent submission
+          var validation = Array.prototype.filter.call(forms, function (form) {
+            form.addEventListener('submit', function (event) {
+              if (form.checkValidity() === false) {
+                event.preventDefault();
+                event.stopPropagation();
+              }
+              form.classList.add('was-validated');
+            }, false);
+          });
+        }, false);
+      })();
+
