@@ -43,17 +43,17 @@
             <td class="text-center"><img src="/static/assets/images/faces/checked.png" alt="" width="30px;"> จ่ายแล้ว</td>
             <td>
               <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#AddExpense">
-                รายการเบิกเงิน
+                <i class="fa-solid fa-money-bills"></i>  รายการเบิกเงิน
               </button>
 
               <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#AddProduce">
-                รายการผลผลิต
+                <i class="fa-solid fa-clipboard-list"></i> รายการผลผลิต
               </button>
               <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#Bills">
-                สรุปยอดบิล
+                <i class="fa-solid fa-cash-register"></i> สรุปยอดบิล
               </button>
               <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#ProduceList">
-                ลบข้อมูล
+                <i class="fa-solid fa-trash"></i>  ลบรายการ
               </button>
             </td>
           </tr>
@@ -63,17 +63,17 @@
             <td class="text-center"><img src="/static/assets/images/faces/waiting.gif" alt="" width="30px;"> รอจ่ายเงิน</td>
             <td>
               <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#AddExpense">
-                รายการเบิกเงิน
+                <i class="fa-solid fa-money-bills"></i>  รายการเบิกเงิน
               </button>
 
               <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#AddProduce">
-                รายการผลผลิต
+                <i class="fa-solid fa-clipboard-list"></i> รายการผลผลิต
               </button>
               <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#Bills">
-                สรุปยอดบิล
+                <i class="fa-solid fa-cash-register"></i> สรุปยอดบิล
               </button>
               <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#ProduceList">
-                ลบข้อมูล
+                <i class="fa-solid fa-trash"></i>  ลบรายการ
               </button>
             </td>
           </tr>
@@ -324,15 +324,27 @@
           <hr>
           <div class="row">
             <h6><img src="/static/assets/images/faces/deliver.png" alt="" width="30px;"> รายละเอียดการส่งมอบ</h6>
+            </div>
+            <div class="row">
+              <div class="col-md-3 pb-2">
+                <label for="driver">ชื่อ - นามสกุลลูกค้า</label>
+                <input type="text" class="form-control" id="driver" name="driver" placeholder="กรุณาระบุ" required />
+            </div>
             <div class="col-md-3 pb-2">
-              <label for="driver">ชื่อ - นามสกุลคนขับรถแตงโม</label>
-              <input type="text" class="form-control" id="driver" name="driver" placeholder="กรุณาระบุ" required />
+              <label for="drivertel">เบอร์โทรติดต่อ</label>
+              <input type="text" class="form-control" id="drivertel" name="drivertel" placeholder="กรุณาระบุ" required />
+            </div>
+            </div>
+          <div class="row">
+            <div class="col-md-3 pb-2">
+              <label for="customerName">ชื่อ - นามสกุลคนขับรถแตงโม</label>
+              <input type="text" class="form-control" id="customerName" name="customerName" placeholder="กรุณาระบุ" required />
           </div>
           <div class="col-md-3 pb-2">
-            <label for="customerName">ชื่อ - นามสกุลลูกค้า</label>
-            <input type="text" class="form-control" id="customerName" name="customerName" placeholder="กรุณาระบุ" required />
-        </div>
-            </div>
+            <label for="customertel">เบอร์โทรติดต่อ</label>
+            <input type="text" class="form-control" id="customertel" name="customertel" placeholder="กรุณาระบุ" required />
+          </div>
+          </div>
         </form>
       </div>
       <div class="modal-footer">
