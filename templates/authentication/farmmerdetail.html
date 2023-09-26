@@ -3,6 +3,8 @@
 {% block content %}
 {% load static %}
 
+<script src="{% static 'js/farmerdetail.js' %}"></script>
+
 
 <div id="main">
     <header class="mb-3">
@@ -13,8 +15,8 @@
     <h4>ข้อมูลคนสวน</h4>
     <div class="row mb-3 mt-3">
       <div class="col-md-12 mt-3 mb-3">
-        <h6><img src="/static/assets/images/faces/farmer.png" alt="" width="30px;">  ชื่อ - นามสกุล :  สุเทพ สีนำมัน </h6>
-        <h6><img src="/static/assets/images/faces/phone.png" alt="" width="30px;">  เบอร์โทรติดต่อ :  086-xxxxxxxx</h6>
+        <h6><img src="/static/assets/images/faces/farmer.png" alt="" width="30px;">  ชื่อ - นามสกุล :  {{ famer.Farmer_name }} </h6>
+        <h6><img src="/static/assets/images/faces/phone.png" alt="" width="30px;">  เบอร์โทรติดต่อ :  {{ famer.Farmer_contact }}</h6>
     
     </div>
 
@@ -37,46 +39,36 @@
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>1</td>
-            <td>15/09/2566</td>
-            <td class="text-center"><img src="/static/assets/images/faces/checked.png" alt="" width="30px;"> จ่ายแล้ว</td>
-            <td>
-              <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#AddExpense">
-                <i class="fa-solid fa-money-bills"></i>  รายการเบิกเงิน
-              </button>
+          {% for i in list_bill %}
+            <tr>
+            
+              <td>{{ forloop.counter }}</td>
+              <td>{{ i.billdate |date:"d/m/Y" }}</td>
+              {% if i.Pay_status %}
+                <td class="text-center"><img src="/static/assets/images/faces/checked.png" alt="" width="30px;"> จ่ายแล้ว</td>
+              {% else %}
+                <td class="text-center"><img src="/static/assets/images/faces/waiting.gif" alt="" width="30px;"> รอจ่ายเงิน</td>
+              {% endif %}
+              
+              <td>
+                <button type="button" class="btn btn-primary" onclick="Show_add({{i.Bill_id}})">
+                  <i class="fa-solid fa-money-bills"></i>  รายการเบิกเงิน
+                </button>
 
-              <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#AddProduce">
-                <i class="fa-solid fa-clipboard-list"></i> รายการผลผลิต
-              </button>
-              <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#Bills">
-                <i class="fa-solid fa-cash-register"></i> สรุปยอดบิล
-              </button>
-              <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#ProduceList">
-                <i class="fa-solid fa-trash"></i>  ลบรายการ
-              </button>
-            </td>
-          </tr>
-          <tr>
-            <td>1</td>
-            <td>15/09/2566</td>
-            <td class="text-center"><img src="/static/assets/images/faces/waiting.gif" alt="" width="30px;"> รอจ่ายเงิน</td>
-            <td>
-              <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#AddExpense">
-                <i class="fa-solid fa-money-bills"></i>  รายการเบิกเงิน
-              </button>
-
-              <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#AddProduce">
-                <i class="fa-solid fa-clipboard-list"></i> รายการผลผลิต
-              </button>
-              <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#Bills">
-                <i class="fa-solid fa-cash-register"></i> สรุปยอดบิล
-              </button>
-              <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#ProduceList">
-                <i class="fa-solid fa-trash"></i>  ลบรายการ
-              </button>
-            </td>
-          </tr>
+                <button type="button" class="btn btn-success" onclick="Show_Production({{i.Bill_id}})">
+                  <i class="fa-solid fa-clipboard-list"></i> รายการผลผลิต
+                </button>
+                <button type="button" class="btn btn-info" onclick="Show_Bill({{i.Bill_id}})">
+                  <i class="fa-solid fa-cash-register"></i> สรุปยอดบิล
+                </button>
+                <button type="button" class="btn btn-danger"  onclick="delete_data({{i.Bill_id}})">
+                  <i class="fa-solid fa-trash"></i>  ลบรายการ
+                </button>
+              </td>
+            </tr>
+          {% endfor %}
+         
+      
       
         </tbody>
       </table>
@@ -87,33 +79,37 @@
 <div class="modal fade modal-fullscreen-sm-down" id="AddRound" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="AddRound" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
+      <form class="g-3" method="post" action="/BillService">
+        {% csrf_token %}
       <div class="modal-header">
         <h5 class="modal-title" id="staticBackdropLabel">สร้างรอบการทำงาน</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form class="g-3">
+      
           <div class="row">
             <div class="col-md-12 mt-3 mb-3">
-              <h6><img src="/static/assets/images/faces/farmer.png" alt="" width="30px;"> สุเทพ สีนำมัน </h6>
-              <h6><img src="/static/assets/images/faces/phone.png" alt="" width="30px;"> 086-xxxxxxxx</h6>
-              <h6><img src="/static/assets/images/faces/calendar.png" alt="" width="30px;"> 15/09/2566</h6>
+              <h6><img src="/static/assets/images/faces/farmer.png" alt="" width="30px;">  ชื่อ - นามสกุล :  {{ famer.Farmer_name }} </h6>
+              <h6><img src="/static/assets/images/faces/phone.png" alt="" width="30px;">  เบอร์โทรติดต่อ :  {{ famer.Farmer_contact }} </h6>
+             
           </div>
          
             <div class="col-lg-6 col-sm-6">
               <label for="startDate">วันที่เก็บข้อมูล</label>
-              <input id="startDate" class="form-control" type="date" />
+              <input required id="startDate" name="date" class="form-control" type="date" />
               <span id="startDateSelected"></span>
+              <input required id="famerid" name="famerid" class="form-control" type="number" value="{{ famer.Farmer_id }}" hidden />
           </div>
           
           </div>
-        </form>
+        
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-danger" data-bs-dismiss="modal">ยกเลิก</button>
-        <button id="saveFarmerlist" type="button" class="btn btn-primary" >บันทึก</button>
+        <button type="submit" class="btn btn-primary" >บันทึก</button>
         
       </div>
+    </form>
     </div>
   </div>
 </div>
@@ -127,90 +123,67 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form class="g-3">
+        <form class="g-3" method="post" action="/AddproducctToLoop">
+          {% csrf_token %}
           <div class="row">
             <div class="col-md-12 mt-3 mb-3">
-              <h6><img src="/static/assets/images/faces/farmer.png" alt="" width="30px;">  ชื่อ - นามสกุล :  สุเทพ สีนำมัน </h6>
-              <h6><img src="/static/assets/images/faces/phone.png" alt="" width="30px;">  เบอร์โทรติดต่อ :  086-xxxxxxxx</h6>
-              <h6><img src="/static/assets/images/faces/calendar.png" alt="" width="30px;">  บิลวันที่ :  15/09/2566</h6>
+              <h6><img src="/static/assets/images/faces/farmer.png" alt="" width="30px;">  ชื่อ - นามสกุล :  {{ famer.Farmer_name }} </h6>
+              <h6><img src="/static/assets/images/faces/phone.png" alt="" width="30px;">  เบอร์โทรติดต่อ :  {{ famer.Farmer_contact }} </h6>
+              {% comment %} <h6><img src="/static/assets/images/faces/calendar.png" alt="" width="30px;">  บิลผลิตวันที่ :  {{ famer.Farmer_name }}</h6> {% endcomment %}
           </div>
           </div>
+          
           <div class="row">
-          <div class="col-md-3 pb-2">
-            <label for="expenseItem">รายการ</label>
-            <input type="text" class="form-control" id="expenseItem" name="expenseItem" placeholder="กรุณาระบุรายการ" required />
-        </div>
-        <div class="col-md-3 pb-2">
-          <label for="itemAmount">จำนวน</label>
-          <input type="text" class="form-control" id="itemAmount" name="itemAmount" placeholder="กรุณาระบุจำนวน" required />
-      </div>
-          <div class="col-md-3 pb-2">
-            <label for="itemPrice">ราคา (บาท)</label>
-            <input type="number" class="form-control" id="itemPrice" name="itemPrice" placeholder="กรุณาระบุราคา" required />
-        </div>
+            <div class="col-md-2 pb-2">
+              <input type="text" class="form-control" id="Add_Bill_id" name="Add_Bill_id" hidden/>
+              <label for="expenseItem">วันที่เบิก</label>
+              <input required type="Date" class="form-control" id="dateinput" name="Date" placeholder="กรุณาระบุวันที่เบิก" required />
+            </div>
+            <div class="col-md-3 pb-2">
+              <label for="item">รายการ</label>
+              <select required class="form-select" id ="Product_id" name = "Product_id" aria-label="Default select example">
+                <option selected></option>
+                {% for i in list_product %}
+                <option value="{{i.product_id}}">{{i.product_description}}</option>
+
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-md-3 pb-2">
+              <label for="itemAmount">จำนวน</label>
+              <input required type="text" class="form-control" id="Qty" name="Qty" placeholder="กรุณาระบุจำนวน" required />
+            </div>
+            {% comment %} <div class="col-md-3 pb-2">
+              <label for="itemPrice">ราคา (บาท)</label>
+              <input type="number" class="form-control" id="itemPrice" name="itemPrice" placeholder="กรุณาระบุราคา"  disabled/>
+            </div> {% endcomment %}
           </div>
           <div class="col-12 mt-2 text-end">
             <button class="btn btn-primary" type="submit">เพิ่มรายการ</button>
           </div>
         </form>
         <div class="col-12 mt-2">
-          <table class="table table-striped">
+          <table class="table table-striped" id="TableProductlist">
             <thead class="thead-dark">
               <tr style="background-color: black; color: #fff;">
                 <th class="col-1">ลำดับที่</th>
-                <th class="col-5">รายการ</th>
+                <th class="col-2">วันที่เบิก</th>
+                <th class="col-4">รายการ</th>
                 <th class="col-1">จำนวน</th>
                 <th class="col-2">ราคา</th>
                 <th class="col-1">รวมเป็น</th>
                 <th class="col-1 text-end">การจัดการ</th>
               </tr>
             </thead>
-            <tbody>
-              <tr>
+            <tbody >
+              {% comment %} <tr>
                 <th scope="row">1</th>
                 <td>ยาฆ่าแมลง</td>
                 <td>1</td>
                 <td>200</td>
                 <td style="color: green; font-weight: 700;">200</td>
                 <td class="text-end"   style=" font-weight: 700;"><button id="delList" type="button" class="btn btn-danger"><i class="fa-solid fa-trash"></i></button></td>
-              </tr>
-              <tr>
-                <th scope="row">1</th>
-                <td>ยาฆ่าแมลง</td>
-                <td>1</td>
-                <td>200</td>
-                <td style="color: green; font-weight: 700;">200</td>
-                <td class="text-end"style=" font-weight: 700;"><button id="delList" type="button" class="btn btn-danger"><i class="fa-solid fa-trash"></i></button></td>
-              </tr>
-              <tr>
-                <th scope="row">1</th>
-                <td>ยาฆ่าแมลง</td>
-                <td>1</td>
-                <td>200</td>
-                <td style="color: green; font-weight: 700;">200</td>
-                <td class="text-end"   style=" font-weight: 700;"><button id="delList" type="button" class="btn btn-danger"><i class="fa-solid fa-trash"></i></button></td>
-              </tr>
-              <tr>
-                <th scope="row">1</th>
-                <td>ยาฆ่าแมลง</td>
-                <td>1</td>
-                <td>200</td>
-                <td style="color: green; font-weight: 700;">200</td>
-                <td class="text-end"   style=" font-weight: 700;"><button id="delList" type="button" class="btn btn-danger"><i class="fa-solid fa-trash"></i></button></td>
-              </tr>
-              <tr>
-                <th scope="row">1</th>
-                <td>ยาฆ่าแมลง</td>
-                <td>1</td>
-                <td>200</td>
-                <td style="color: green; font-weight: 700;">200</td>
-                <td class="text-end"   style=" font-weight: 700;"><button id="delList" type="button" class="btn btn-danger"><i class="fa-solid fa-trash"></i></button></td>
-              </tr>
-              <tr>
-                <td class="text-end" style="background-color: black; color: #fff;" colspan="6">
-                  ทั้งหมด <span style="color: #88FE31; font-weight: 700;">10</span> รายการ / ยอดรวมทั้งหมด <span style="color: #88FE31; font-weight: 700;">99999</span>  บาท
-                </td>
-              </tr>
+              </tr> {% endcomment %}
             </tbody>
           </table>
         </div>
@@ -232,16 +205,61 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form class="g-3">
+        
           <div class="row">
             <div class="col-md-12 mt-3 mb-3">
-              <h6><img src="/static/assets/images/faces/farmer.png" alt="" width="30px;">  ชื่อ - นามสกุล :  สุเทพ สีนำมัน </h6>
-              <h6><img src="/static/assets/images/faces/phone.png" alt="" width="30px;">  เบอร์โทรติดต่อ :  086-xxxxxxxx</h6>
-              <h6><img src="/static/assets/images/faces/calendar.png" alt="" width="30px;">  บิลวันที่ :  15/09/2566</h6>
-          </div>
+              <h6><img src="/static/assets/images/faces/farmer.png" alt="" width="30px;">  ชื่อ - นามสกุล :  {{ famer.Farmer_name }} </h6>
+              <h6><img src="/static/assets/images/faces/phone.png" alt="" width="30px;">  เบอร์โทรติดต่อ :  {{ famer.Farmer_contact }} </h6>
+
+            </div>
+            
           </div>
           <hr>
-          <div class="row">
+          <div class="col-12 mt-2">
+              <table id="TableProductionlist" class="table table-striped">
+                <thead>
+                    <tr style="background-color: black; color: #fff;">
+                        <th class="col-1">วันที่</th>
+                        <th  class="col-3">ชื่อคนขับรถ</th>
+                        <th  class="col-1">ใหญ่</th>
+                        <th  class="col-1">กลาง</th>
+                        <th  class="col-1">เล็ก</th>
+                        <th  class="col-1">ก๊อฟ</th>
+                        <th  class="col-4">ลูกค้า</th>
+                        <th  class="col-1 text-center" >ลบรายการ</th>
+                    </tr>
+                </thead>
+                <tbody>
+          
+                    
+                    <tr>
+                      <form class="g-3" method="post" action="/Addproduction">
+                        {% csrf_token %}
+                        <td><div class="cs-form">
+                          <input type="text" id="Add_Bill_id_production" name = "Add_Bill_id_production" class="form-control" hidden />
+                          <input required type="date" name = "date" class="form-control" />
+                        </div></td>
+                        <td><input  required type="text" class="form-control"  name ="car"></td>
+                        <td><input  required type="number" class="form-control" value="0" name ="H_Qty"></td>
+                        <td><input required type="number" class="form-control" value="0" name ="T_Qty"></td>
+                        <td><input required type="number"class="form-control" value="0" name ="M_Qty"></td>
+                        <td><input required type="number" class="form-control" value="0" name ="L_Qty"></td>
+                        <td><select class="form-select" name ="custormer_id" aria-label="Default select example">
+                          <option selected></option>
+                          {% for i in list_customer %}
+                          <option value="{{i.custormer_id}}">{{i.customer_name}}</option>
+                          
+                          {% endfor %}
+                        </select></td>
+                        <td class="text-center"   style=" font-weight: 700;"><button  type="submit" class="btn btn-info"><i class="fa fa-check"></i></button></td>
+                      </form>
+                    </tr>
+                  
+                </tbody>
+            </table>
+          </div>
+        
+          {% comment %} <div class="row">
             <h6><img src="/static/assets/images/faces/watermelon.png" alt="" width="30px;"> ปริมาณผลผลิต</h6>
 
             <div class="col-6">
@@ -320,7 +338,6 @@
             </table>
             </div>
           </div>
-
           <hr>
           <div class="row">
             <h6><img src="/static/assets/images/faces/deliver.png" alt="" width="30px;"> รายละเอียดการส่งมอบ</h6>
@@ -344,12 +361,11 @@
             <label for="customertel">เบอร์โทรติดต่อ</label>
             <input type="text" class="form-control" id="customertel" name="customertel" placeholder="กรุณาระบุ" required />
           </div>
-          </div>
-        </form>
+          </div> {% endcomment %} 
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-danger" data-bs-dismiss="modal">ยกเลิก</button>
-        <button id="saveFarmerlist" type="button" class="btn btn-primary" >บันทึก</button>
+        {% comment %} <button id="saveFarmerlist" type="button" class="btn btn-primary" >บันทึก</button> {% endcomment %}
       </div>
     </div>
   </div>
@@ -367,9 +383,8 @@
         <form class="g-3">
           <div class="row">
             <div class="col-md-12 mt-3 mb-3">
-                <h6><img src="/static/assets/images/faces/farmer.png" alt="" width="30px;">  ชื่อ - นามสกุล :  สุเทพ สีนำมัน </h6>
-                <h6><img src="/static/assets/images/faces/phone.png" alt="" width="30px;">  เบอร์โทรติดต่อ :  086-xxxxxxxx</h6>
-                <h6><img src="/static/assets/images/faces/calendar.png" alt="" width="30px;">  บิลวันที่ :  15/09/2566</h6>
+              <h6><img src="/static/assets/images/faces/farmer.png" alt="" width="30px;">  ชื่อ - นามสกุล :  {{ famer.Farmer_name }} </h6>
+              <h6><img src="/static/assets/images/faces/phone.png" alt="" width="30px;">  เบอร์โทรติดต่อ :  {{ famer.Farmer_contact }} </h6>
             </div>
           </div>
         </form>
@@ -380,7 +395,7 @@
         </div>
       </div>
         <div class="col-12 mt-2">
-          <table class="table table-striped">
+          <table class="table table-striped" id="expenttable">
             <thead class="thead-dark">
               <tr style="background-color: black; color: #fff;">
                 <th class="col-1">ลำดับที่</th>
@@ -400,38 +415,7 @@
                 <td style="color: green; font-weight: 700;">200</td>
              
               </tr>
-              <tr>
-                <th scope="row">1</th>
-                <td>ยาฆ่าแมลง</td>
-                <td>1</td>
-                <td>200</td>
-                <td style="color: green; font-weight: 700;">200</td>
-             
-              </tr>
-              <tr>
-                <th scope="row">1</th>
-                <td>ยาฆ่าแมลง</td>
-                <td>1</td>
-                <td>200</td>
-                <td style="color: green; font-weight: 700;">200</td>
-            
-              </tr>
-              <tr>
-                <th scope="row">1</th>
-                <td>ยาฆ่าแมลง</td>
-                <td>1</td>
-                <td>200</td>
-                <td style="color: green; font-weight: 700;">200</td>
-                
-              </tr>
-              <tr>
-                <th scope="row">1</th>
-                <td>ยาฆ่าแมลง</td>
-                <td>1</td>
-                <td>200</td>
-                <td style="color: green; font-weight: 700;">200</td>
-             
-              </tr>
+
               <tr>
                 <td class="text-end" style="background-color: black; color: #fff;" colspan="6">
                   ทั้งหมด <span style="color: #88FE31; font-weight: 700;">10</span> รายการ / ยอดรวมทั้งหมด <span style="color: #88FE31; font-weight: 700;">99999</span>  บาท
@@ -444,58 +428,154 @@
         <div class="col-md-12 mt-3 mb-3">
           <h6><img src="/static/assets/images/faces/transaction.png" alt="" width="30px;">  สรุปยอดที่ได้จากผลผลิต </h6>
         </div>
-<div class="col-md-12 mt-3 mb-3">
-  <table class="table table-striped">
-    <thead>
-      <tr style="background-color: black; color: #fff;">
-        <th scope="col">ขนาดแตงโม</th>
-        <th scope="col">จำนวน</th>
-        <th scope="col">ราคารวม (บาท)</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <th>แตงโมขนาดใหญ่</th>
-        <td id="wXLquantity"></td>
-        <td id="wXLtotalPrice"></td>
-      </tr>
-      <tr>
-        <th>แตงโมขนาดกลาง</th>
-        <td id="wMquantity"></td>
-        <td id="wMtotalPrice"></td>
-      </tr>
-      <tr>
-        <th>แตงโมขนาดเล็ก</th>
-        <td id="wSquantity"></td>
-        <td id="wStotalPrice"></td>
-      </tr>
-      <tr>
-        <td class="text-end" style="background-color: black; color: #fff;" colspan="3">
-        ยอดรวมทั้งหมด <span style="color: #88FE31; font-weight: 700;" id="totalPrice"></span>  บาท
-        </td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-<div class="col-md-12 mt-3 mb-3">
-  <h6><img src="/static/assets/images/faces/finance.png" alt="" width="30px;">  สรุปยอดรวมที่จ่ายทั้งหมด </h6>
-</div>
-<div class="col-md-12 mt-3 mb-3">
-  <h6>ยอดเงินที่ได้จากผลผลิต  -  ยอดเบิกเงินสุทธิ  =  <span style="color: #2E6D00; font-weight: 700;">100000</span>  บาท</h6>
-</div>
+        <form class="g-3" method="post" action="/Confirmbill">
+          {% csrf_token %}
+        <input name = "Confirm_Bill_id" id ="Confirm_Bill_id" hidden>
+        <div class="col-md-12 mt-3 mb-3">
+          <table class="table table-striped" id="ProductionTable">
+            <thead>
+              <tr style="background-color: black; color: #fff;">
+                <th scope="col">ขนาดแตงโม</th>
+                <th scope="col">จำนวน</th>
+                <th scope="col" style="width:20%;">ราคา</th>
+                <th scope="col">ราคารวม (บาท)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th>แตงโมขนาดใหญ่</th>
+                <td id="wXLquantity_1"><span id="qty1"></span></td>
+                <td><input required class="form-control text-center" name ="price_H" value="0" id="price_H" type="number"></td>
+                <td class="text-center"><span id="price1"></span></td>
+              </tr>
+              <tr>
+                <th>แตงโมขนาดกลาง</th>
+                <td id="wXLquantity_2"><span id="qty2"></span></td>
+                <td><input required  class="form-control text-center" name ="price_T" value="0" id="price_T" type="number"></td>
+                <td class="text-center"><span id="price2"></span></td>
+              </tr>
+              <tr>
+                <th>แตงโมขนาดเล็ก</th>
+                <td> <span id="qty3"></span> </td>
+                <td id="wXLtotalPrice"><input required class="form-control text-center" value="0" name ="price_M" id="price_M" type="number"></td>
+                <td class="text-center"><span id="price3"></span></td>
+              </tr>
+              <tr>
+                <th>แตงโมขนาดก๊อฟ</th>
+                <td><span id="qty4"></span></td>
+                <td ><input required class="form-control text-center" name ="price_L" value="0" id="price_L" type="number"></td>
+                <td class="text-center"> <span id="price4"></span> </td>
+              </tr>
+              
+              <tr>
+                <td class="text-end" style="background-color: black; color: #fff;" colspan="4">
+                <button type="button" id="cal" class="btn btn-primary" onclick="cal_data()">คำนวณราคา</button> ยอดรวมทั้งหมด <span style="color: #88FE31; font-weight: 700;" id="totalPrice"></span>  บาท
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="col-md-12 mt-3 mb-3">
+          <h6><img src="/static/assets/images/faces/finance.png" alt="" width="30px;">  สรุปยอดรวมที่จ่ายทั้งหมด </h6>
+        </div>
+      <div class="col-md-12 mt-3 mb-3">
+        <input type ="text" name="cost" id="cost_data" hidden>
+        <h6>ยอดเงินที่ได้จากผลผลิต  -  ยอดเบิกเงินสุทธิ  =  <span style="color: #2E6D00; font-weight: 700;" id="total_cost" ></span>  บาท  </h6><h4 id="confirm" style="color:red;"><h4>
+      </div>
 
       </div>
 
       <div class="modal-footer">
         <button type="button" class="btn btn-danger" data-bs-dismiss="modal">ย้อนกลับ</button>
-        <button id="saveFarmerlist" type="button" class="btn btn-success" >จ่ายบิล</button>
-        <button id="saveFarmerlist" type="button" class="btn btn-primary" >พิมพ์รายการ</button>
+        <button type="submit" class="btn btn-success" >จ่ายบิล</button>
+        {% comment %} <button id="saveFarmerlist" type="button" class="btn btn-primary" >พิมพ์รายการ</button> {% endcomment %}
       </div>
+      </form>
     </div>
   </div>
 </div>
 
+<script>
+  $(document).ready( function () {
+    $('#myTable').DataTable();
 
+
+    $("#price_T").keydown(function(event) {
+      // Check if the key code is 13, which corresponds to the "Enter" key
+      if (event.keyCode === 13) {
+        alert("Enter key pressed!");
+        // You can perform your desired action here
+      }
+    });
+} );
+function delete_data(id){
+    
+  Swal.fire({
+      title: 'ต้องการจะลบรายการรอบผลิต?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'ลบข้อมูล',
+      cancelButtonText: 'ยกเลิก'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        $.ajax({
+          type: "POST",
+          url: "/RemoveFarmLoop", 
+          dataType: 'json',
+              async: false,
+              //json object to sent to the authentication url
+              data: {
+                 csrfmiddlewaretoken: '{{ csrf_token }}' ,
+                 "remove_id":id
+              },
+          success: function(data)
+          {	
+            location.reload();
+          }
+    
+        });
+      }
+    });
+ 
+}
+function delete_product(id){
+    
+  Swal.fire({
+      title: 'ต้องการจะลบรายการเบิก?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'ลบข้อมูล',
+      cancelButtonText: 'ยกเลิก'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        $.ajax({
+          type: "POST",
+          url: "/RemoveproducctToLoop", 
+          dataType: 'json',
+              async: false,
+              //json object to sent to the authentication url
+              data: {
+                 csrfmiddlewaretoken: '{{ csrf_token }}' ,
+                 "remove_id":id
+              },
+          success: function(data)
+          {	
+            location.reload();
+          }
+    
+        });
+      }
+    });
+ 
+}
+
+
+
+</script>
 
 
 {% endblock content%}

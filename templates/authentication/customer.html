@@ -2,7 +2,7 @@
 
 {% block content %}
 {% load static %}
-
+<script src="{% static 'js/customer.js' %}"></script>
 
 <div id="main">
     <header class="mb-3">
@@ -12,22 +12,11 @@
     </header>
     <h4>ลูกค้า</h4>
     <div class="row mb-3">
-        <div class="col-lg-3 col-sm-6">
-            <label for="startDate">วันที่เริ่มต้น</label>
-            <input id="startDate" class="form-control" type="date" />
-            <span id="startDateSelected"></span>
-        </div>
-        <div class="col-lg-3 col-sm-6">
-            <label for="endDate">วันที่สิ้นสุด</label>
-            <input id="endDate" class="form-control" type="date" />
-            <span id="endDateSelected"></span>
-        </div>
-        <div class="col-lg-3 col-sm-6" style="margin-top:23px;">
-          <label for="search"></label>
-          <button id="search" type="button" class="btn btn-primary"><i class="fa-solid fa-magnifying-glass"></i>
-            ค้นหา
-          </button>
+      <div class="col-lg-3 col-sm-6 pb-3">
+        <label for="startDate">ค้นหาข้อมูล</label>
+        <input type="text" class="form-control" id="filterInput" placeholder="Search for names...">
       </div>
+     
   
     </div>
     <div class="row mb-3">
@@ -41,7 +30,7 @@
       </div>
 
   </div>
-      <table class="table table-striped table-hover">
+      <table class="table table-striped table-hover" id="myTable">
           <thead style="background-color: black; color: azure;">
             <tr>
               <th scope="col">ลำดับที่</th>
@@ -53,36 +42,28 @@
             </tr>
           </thead>
           <tbody>
+            {% for i in Production_Bill_ %}
             <tr>
-              <td>1</td>
-              <td>14/9/2566</td>
-              <td>อุดม แต้พานิช</td>
-              <td>086-xxxxxxxx</td>
-              <td class="text-center"><img src="/static/assets/images/faces/checked.png" alt="" width="30px;"> จ่ายแล้ว</td>
+              <td>{{forloop.counter}}</td>
+              <td>{{i.Production_Date |date:"d/m/Y"}}</td>
+              <td>{{i.Custormer.customer_name}}</td>
+              <td>{{i.Custormer.customer_contact}}</td>
+              {% if i.Pay_status %}
+                <td class="text-center"><img src="/static/assets/images/faces/checked.png" alt="" width="30px;"> จ่ายแล้ว</td>
+              {% else %}
+                <td class="text-center"><img src="/static/assets/images/faces/waiting.gif" alt="" width="30px;"> รอจ่ายเงิน</td>
+              {% endif %}
               <td>
-                <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#CustomerBills">
+                <button type="button" class="btn btn-info" onclick="Show_Bill({{i.Production_Bill_ID}})">
                   <i class="fa-solid fa-circle-info"></i> ดูรายการสั่งซื้อ
                 </button>
-                <button id="delfarmerlist" type="button" class="btn btn-danger">
+                {% comment %} <button id="delfarmerlist" type="button" onclick="delete_data({{i.Bill_OP.Bill_id}})">
                   <i class="fa-solid fa-trash"></i> ลบรายการ
-                </button>
+                </button> {% endcomment %}
               </td>
             </tr>
-            <tr>
-              <td>2</td>
-              <td>14/9/2566</td>
-              <td>ฮั้ยหยะ เอ๊ะอะ</td>
-              <td>086-xxxxxxxx</td>
-              <td class="text-center"><img src="/static/assets/images/faces/waiting.gif" alt="" width="30px;"> รอจ่ายเงิน</td>
-              <td>
-                <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#CustomerBills">
-                  <i class="fa-solid fa-circle-info"></i> ดูรายการสั่งซื้อ
-                </button>
-                <button id="delfarmerlist" type="button" class="btn btn-danger">
-                  <i class="fa-solid fa-trash"></i> ลบรายการ
-                </button>
-              </td>
-            </tr>
+            {% endfor %}
+           
           </tbody>
         </table>
   </div>
@@ -96,25 +77,28 @@
         <h5 class="modal-title" id="staticBackdropLabel">เพิ่มข้อมูลลูกค้า</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
+      <form class="g-3" method="post" action="/AddCustomer">
+        {% csrf_token %}
       <div class="modal-body">
-        <form class="g-3">
+        
           <div class="row">
             <div class="col-md-6 pb-2">
               <label for="customerName" class="form-label">ชื่อ - นามสกุล</label>
-              <input type="text" class="form-control" id="customerName" name="customerName" placeholder="กรุณาระบุชื่อ - นามสกุล" required />
+              <input type="text" class="form-control" id="name" name="name" placeholder="กรุณาระบุชื่อ - นามสกุล" required />
             </div>
             <div class="col-md-6 pb-2">
               <label for="customerTel" class="form-label">เบอร์โทรศัพท์</label>
-              <input type="text" class="form-control" id="customerTel" name="customerTel" placeholder="กรุณาระบุเบอร์โทรศัพท์" required />
+              <input type="text" class="form-control" id="tel" name="tel" placeholder="กรุณาระบุเบอร์โทรศัพท์" required />
             </div>
           </div>
-        </form>
+        
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-danger" data-bs-dismiss="modal">ยกเลิก</button>
-        <button id="saveFarmerlist" type="button" class="btn btn-primary" >บันทึก</button>
+        <button type="submit" class="btn btn-primary" >บันทึก</button>
         
       </div>
+    </form>
     </div>
   </div>
 </div>
@@ -139,26 +123,19 @@
               </tr>
             </thead>
             <tbody>
+              {% for i in list_cutomer %}
               <tr>
-                <td>1</td>
-                <td>อุดม แต้พานิช</td>
-                <td>086-xxxxxxxx</td>
+                <td>{{forloop.counter}}</td>
+                <td>{{i.customer_name}}</td>
+                <td>{{i.customer_contact}}</td>
                 <td>
-                  <button id="delfarmerlist" type="button" class="btn btn-danger">
+                  <button id="delfarmerlist" type="button" onclick="delete_cus({{i.custormer_id}})" class="btn btn-danger">
                     <i class="fa-solid fa-trash"></i> ลบ
                   </button>
                 </td>
               </tr>
-              <tr>
-                <td>2</td>
-                <td>ฮั้ยหยะ เอ๊ะอะ</td>
-                <td>086-xxxxxxxx</td>
-                <td>
-                  <button id="delfarmerlist" type="button" class="btn btn-danger">
-                    <i class="fa-solid fa-trash"></i> ลบ
-                  </button>
-                </td>
-              </tr>
+              {% endfor %}
+             
             </tbody>
           </table>
          </div>
@@ -180,96 +157,160 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form class="g-3">
+        
           <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-6">
               <h6>ข้อมูลลูกค้า</h6>
-                <h6><img src="/static/assets/images/faces/consumer.png" alt="" width="30px;">  ชื่อ - นามสกุล :  สุเทพ สีนำมัน </h6>
-                <h6><img src="/static/assets/images/faces/phone.png" alt="" width="30px;">  เบอร์โทรติดต่อ :  086-xxxxxxxx</h6>
-                <h6><img src="/static/assets/images/faces/calendar.png" alt="" width="30px;">  บิลวันที่ :  15/09/2566</h6>
+                <h6><img src="/static/assets/images/faces/consumer.png" alt="" width="30px;">  ชื่อ - นามสกุล :  <span id="cus_name"></span></h6>
+                <h6><img src="/static/assets/images/faces/phone.png" alt="" width="30px;">  เบอร์โทรติดต่อ :  <span id="cus_tel"></span></h6>
+                <h6><img src="/static/assets/images/faces/calendar.png" alt="" width="30px;"> วันที่ : <span id="cus_date"></span></h6>
             </div>
+            <div class="col-md-6">
+            
+              <h6>ข้อมูลคนขับรถส่งแตงโม</h6>
+              <h6><img src="/static/assets/images/faces/deliver.png" alt="" width="30px;">  ชื่อ - นามสกุล : <span id="car"></span> </h6>
+              {% comment %} <h6><img src="/static/assets/images/faces/phone.png" alt="" width="30px;">  เบอร์โทรติดต่อ :  086-xxxxxxxx</h6> {% endcomment %}
           </div>
-        </form>
+            </div>
         <hr>
-      <div class="row">
-        <div class="col-md-12">
-          <h6><img src="/static/assets/images/faces/transaction.png" alt="" width="30px;">  ข้อมูลการส่งซื้อ</h6>
-        </div>
-        <div class="col-md-3">
-          <h6>ข้อมูลคนสวนแตงโม</h6>
-          <h6><img src="/static/assets/images/faces/farmer.png" alt="" width="30px;">  ชื่อ - นามสกุล :  สุเทพ สีนำมัน </h6>
-          <h6><img src="/static/assets/images/faces/phone.png" alt="" width="30px;">  เบอร์โทรติดต่อ :  086-xxxxxxxx</h6>
-        </div>
-        <div class="col-md-3">
-          <h6>ข้อมูลคนขับรถส่งแตงโม</h6>
-            <h6><img src="/static/assets/images/faces/deliver.png" alt="" width="30px;">  ชื่อ - นามสกุล :  สุเทพ สีนำมัน </h6>
-            <h6><img src="/static/assets/images/faces/phone.png" alt="" width="30px;">  เบอร์โทรติดต่อ :  086-xxxxxxxx</h6>
-        </div>
-      </div>
+      
 <div class="row">
-  <div class="col-md-12 mt-3">
-    <table class="table table-striped">
+
+  <form class="g-3" method="post" action="/CustomerConfirmbill">
+    {% csrf_token %}
+  <input name = "Production_Bill_ID" id ="Production_Bill_ID" hidden>
+  <div class="col-md-12 mt-3 mb-3">
+    <table class="table table-striped" id="ProductionTable">
       <thead>
         <tr style="background-color: black; color: #fff;">
           <th scope="col">ขนาดแตงโม</th>
           <th scope="col">จำนวน</th>
+          <th scope="col" style="width:20%;">ราคา</th>
           <th scope="col">ราคารวม (บาท)</th>
         </tr>
       </thead>
       <tbody>
         <tr>
           <th>แตงโมขนาดใหญ่</th>
-          <td id="wXLquantity"></td>
-          <td id="wXLtotalPrice"></td>
+          <td id="wXLquantity_1"><span id="qty1"></span></td>
+          <td><input required class="form-control text-center" name ="price_H" value="0" id="price_H" type="number"></td>
+          <td class="text-center"><span id="price1"></span></td>
         </tr>
         <tr>
           <th>แตงโมขนาดกลาง</th>
-          <td id="wMquantity"></td>
-          <td id="wMtotalPrice"></td>
+          <td id="wXLquantity_2"><span id="qty2"></span></td>
+          <td><input required  class="form-control text-center" name ="price_T" value="0" id="price_T" type="number"></td>
+          <td class="text-center"><span id="price2"></span></td>
         </tr>
         <tr>
           <th>แตงโมขนาดเล็ก</th>
-          <td id="wSquantity"></td>
-          <td id="wStotalPrice"></td>
+          <td> <span id="qty3"></span> </td>
+          <td id="wXLtotalPrice"><input required class="form-control text-center" value="0" name ="price_M" id="price_M" type="number"></td>
+          <td class="text-center"><span id="price3"></span></td>
         </tr>
         <tr>
-          <td class="text-end" style="background-color: black; color: #fff;" colspan="3">
-          ยอดรวมทั้งหมด <span style="color: #88FE31; font-weight: 700;" id="totalPrice"></span>  บาท
+          <th>แตงโมขนาดก๊อฟ</th>
+          <td><span id="qty4"></span></td>
+          <td ><input required class="form-control text-center" name ="price_L" value="0" id="price_L" type="number"></td>
+          <td class="text-center"> <span id="price4"></span> </td>
+        </tr>
+        
+        <tr>
+          <td class="text-end" style="background-color: black; color: #fff;" colspan="4">
+          <button type="button" id="cal" class="btn btn-primary" onclick="cal_data()">คำนวณราคา</button> ยอดรวมทั้งหมด <span style="color: #88FE31; font-weight: 700;" id="totalPrice"></span>  บาท
           </td>
         </tr>
       </tbody>
     </table>
   </div>
-  
 </div>
 
 <div class="row">
   <div class="col-md-6">
-    <h6><img src="/static/assets/images/faces/finance.png" alt="" width="30px;">  สรุปยอดรวมค่าแตงโมทั้งหมด <span style="color: #2E6D00; font-weight: 700;">100000</span>  บาท </h6>
+    <h6><img src="/static/assets/images/faces/finance.png" alt="" width="30px;">  สรุปยอดรวมค่าแตงโมทั้งหมด  <span style="color: #2E6D00; font-weight: 700;" id="total_cost" ></span>  บาท </h6>
   </div>
   <hr>
   <div class="col-md-12">
-    <h6><img src="/static/assets/images/faces/finance.png" alt="" width="30px;">  สถานะการชำระเงิน </h6>
-  </div>
-  <div class="col-md-12">
-    <div class="form-check form-check-inline">
-      <input class="form-check-input" type="radio" name="paidStatus" id="paidStatus_false" value="paidStatus_false" checked>
-      <label class="form-check-label" for="paidStatus_false"><span style="color: red;">ยังไม่ได้ชำระ</span></label>
-    </div>
-    <div class="form-check form-check-inline">
-      <input class="form-check-input" type="radio" name="paidStatus" id="paidStatus_true" value="paidStatus_true">
-      <label class="form-check-label" for="paidStatus_true"><span style="color: green;">ชำระเงินแล้ว</span></label>
-    </div>
+    <h6><img src="/static/assets/images/faces/finance.png" alt="" width="30px;">  สถานะการชำระเงิน <h4 id="confirm" style="color:red;"><h4></h6>
   </div>
 </div>
       </div>
 
       <div class="modal-footer">
         <button type="button" class="btn btn-danger" data-bs-dismiss="modal">ย้อนกลับ</button>
-        <button id="saveFarmerlist" type="button" class="btn btn-success" >บันทึก</button>
+        <button  type="submit" class="btn btn-success" >จ่ายบิล</button>
       </div>
+    </form>
     </div>
   </div>
 </div>
+<script>
+  // Get the input element and table
+  const filterInput = document.getElementById('filterInput');
+  const dataTable = document.getElementById('myTable');
+
+  // Add an event listener to the input element
+  filterInput.addEventListener('keyup', filterTable);
+
+  function filterTable() {
+      const filterValue = filterInput.value.toLowerCase();
+      const rows = dataTable.getElementsByTagName('tr');
+
+      for (let i = 1; i < rows.length; i++) {
+          const row = rows[i];
+          const cells = row.getElementsByTagName('td');
+          let rowContainsFilter = false;
+
+          for (let j = 0; j < cells.length; j++) {
+              const cell = cells[j];
+              const cellText = cell.textContent.toLowerCase();
+
+              if (cellText.includes(filterValue)) {
+                  rowContainsFilter = true;
+                  break;
+              }
+          }
+
+          if (rowContainsFilter) {
+              row.style.display = ''; // Show rows containing the search term
+          } else {
+              row.style.display = 'none'; // Hide rows that don't contain the search term
+          }
+      }
+  }
+
+  function delete_cus(id){
+    
+    Swal.fire({
+        title: 'ต้องการจะลบลูกค้า?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'ลบข้อมูล',
+        cancelButtonText: 'ยกเลิก'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          $.ajax({
+            type: "POST",
+            url: "/RemoveCustomer", 
+            dataType: 'json',
+                async: false,
+                //json object to sent to the authentication url
+                data: {
+                   csrfmiddlewaretoken: '{{ csrf_token }}' ,
+                   "remove_id":id
+                },
+            success: function(data)
+            {	
+              location.reload();
+            }
+      
+          });
+        }
+      });
+   
+  }
+</script>
 
 {% endblock content%}

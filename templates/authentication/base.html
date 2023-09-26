@@ -25,7 +25,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/2.1.3/TweenMax.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
     
- 
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.css" />
+  
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.js"></script>
+    
 
 </head>
 <style>
@@ -57,12 +60,12 @@
                                 <span>หน้าแรก</span>
                             </a>
                         </li>
-                        <li class="sidebar-item">
+                        {% comment %} <li class="sidebar-item">
                             <a href="/dashborad" class='sidebar-link'>
                                 <i class="bi bi-grid-fill"></i>
                                 <span>รายงาน</span>
                             </a>
-                        </li>
+                        </li> {% endcomment %}
                         <li class="sidebar-item">
                             <a href="/farmmer" class="sidebar-link">
                                 <i class="bi bi-grid-fill"></i>
@@ -89,6 +92,10 @@
                             <ul class="submenu" style="display: none;">
                                 <li class="submenu-item ">
                                  
+                                    <a href="/admin" target="_blank">Admin-site</a>
+                                </li>
+                                <li class="submenu-item ">
+                                 
                                     <a href="/signout">ออกจากระบบ</a>
                                 </li>
                             
@@ -106,11 +113,14 @@
      
     </div>
 
+   
     <script src="{% static 'assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js' %}"></script>
     <script src="{% static 'assets/js/bootstrap.bundle.min.js' %}"></script>
 
     <script src="{% static 'assets/vendors/apexcharts/apexcharts.js' %}"></script>
     <script src="{% static 'assets/js/pages/dashboard.js' %}"></script>
+
+    <script src="{% static 'assets/js/main.js' %}"></script>
    
     <script src="{% static 'js/main.js' %}"></script>
     <script src="{% static 'js/alert.js' %}"></script>

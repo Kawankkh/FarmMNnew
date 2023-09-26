@@ -14,20 +14,11 @@
     <div class="row mb-3">
       
         <div class="col-lg-3 col-sm-6 pb-3">
-          <label for="farmmerName" class="form-label">ชื่อ - นามสกุล</label>
-          <input type="text" class="form-control" id="farmmerName" name="farmmerName" placeholder="กรุณาระบุชื่อ - นามสกุล" required />
+          <label for="startDate">ค้นหาข้อมูล</label>
+          <input type="text" class="form-control" id="filterInput" placeholder="Search for names...">
         </div>
-        <div class="col-lg-3 col-sm-6 pb-3">
-          <label for="farmmerTel" class="form-label">เบอร์โทรศัพท์</label>
-          <input type="text" class="form-control" id="farmmerTel" name="farmmerTel" placeholder="กรุณาระบุเบอร์โทรศัพท์" required />
-        </div>
-     
-      <div class="col-lg-3 col-sm-6" style="margin-top:32px;">
-        <label for="search"></label>
-        <button id="search" type="button" class="btn btn-primary"><i class="fa-solid fa-magnifying-glass"></i>
-          ค้นหา
-        </button>
-    </div>
+
+    
 
   </div>
   <hr>
@@ -41,7 +32,7 @@
    
 
 </div>
-    <table class="table table-striped table-hover">
+    <table class="table table-striped table-hover" id="myTable">
         <thead style="background-color: black; color: azure;">
           <tr>
             <th>ลำดับที่</th>
@@ -50,50 +41,122 @@
             <th>การจัดการ</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody >
+           {% for i in famer %}
           <tr>
-            <td>1</td>
-            <td>ฮา คำเมือง</td>
-            <td>0812345678</td>
+            <td>{{ forloop.counter }}</td>
+            <td>{{i.Farmer_name}}</td>
+            <td>{{i.Farmer_contact}}</td>
             <td>
-              <a href="/farmmerdetail" type="button" class="btn btn-primary">
+              <a href="/farmmerdetail/{{i.Farmer_id}}" type="button" class="btn btn-primary">
                 <i class="fa-solid fa-circle-info"></i> ดูข้อมูลคนสวน
               </a>
-              <button id="delfarmerlist" type="button" class="btn btn-danger">
-                <i class="fa-solid fa-trash"></i> ลบรายการ
+              <button type="button" class="btn btn-warning" onclick = "Show_modal({{i.Farmer_id}},'{{i.Farmer_name}}',{{i.Farmer_contact}})">
+                <i class="fa-solid fa-pen-to-square"></i> แก้ไขรายการ
               </button>
-            </td>
-          </tr>
-          <tr>
-            <td>2</td>
-            <td>ฮา คำเมือง</td>
-            <td>0812345678</td>
-            <td>
-              <a href="/farmmerdetail" type="button" class="btn btn-primary">
-                <i class="fa-solid fa-circle-info"></i> ดูข้อมูลคนสวน
-              </a>
-              <button id="delfarmerlist" type="button" class="btn btn-danger">
+              <button type="button"  onclick="delete_data({{i.Farmer_id}})" class="btn btn-danger">
                 <i class="fa-solid fa-trash"></i>  ลบรายการ
               </button>
             </td>
           </tr>
+          {% endfor %}
+         
+       
         </tbody>
       </table>
 </div>
 
 
 
+<div class="modal fade modal-fullscreen-sm-down" id="EditFarmer" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form class="g-3" method="post" action="/Editfarmmer">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">แก้ไขข้อมูลคนสวน</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+          {% csrf_token %}
+          <div class="row">
+            <div class="col-md-6 pb-2">
+              <input type="text" class="form-control" id="edit_id" name="edit_id" hidden/>
+              <label for="farmmerName" class="form-label">ชื่อ - นามสกุล</label>
+              <input type="text" class="form-control" id="edit_name" name="edit_name" placeholder="กรุณาระบุชื่อ - นามสกุล" required />
+            </div>
+            <div class="col-md-6 pb-2">
+              <label for="farmmerTel" class="form-label">เบอร์โทรศัพท์</label>
+              <input type="text" class="form-control" id="edit_Tel" name="edit_Tel" placeholder="กรุณาระบุเบอร์โทรศัพท์" required />
+            </div>
+          </div>
+      
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">ยกเลิก</button>
+        <button type="submit" class="btn btn-primary" >บันทึก</button>
+        
+      </div>
+    </form>
+    </div>
+  </div>
+</div>
+<script>
+  function Show_modal(id,name,Tel){
 
+
+    $('#EditFarmer').modal("show");
+    $("#edit_id").val(id);
+    $("#edit_name").val(name);
+    $("#edit_Tel").val(Tel);
+  }
+  function delete_data(id){
+    var btn = "button";
+    Swal.fire({
+        title: 'ต้องการจะลบข้อมูล?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'ลบข้อมูล',
+        cancelButtonText: 'ยกเลิก'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          $.ajax({
+            type: "POST",
+            url: "/Removefarmmer", 
+            dataType: 'json',
+                async: false,
+                //json object to sent to the authentication url
+                data: {
+                   csrfmiddlewaretoken: '{{ csrf_token }}' ,
+                   "remove_id":id
+                },
+            success: function(data)
+            {	
+              location.reload();
+      
+            }
+      
+          });
+        }
+      });
+   
+  }
+
+
+
+</script>
 <!-- Add Farmmer-->
 <div class="modal fade modal-fullscreen-sm-down" id="AddFarmer" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
+      <form class="g-3" method="post" action="/CustomerService">
       <div class="modal-header">
         <h5 class="modal-title" id="staticBackdropLabel">เพิ่มข้อมูลคนสวน</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form class="g-3">
+          {% csrf_token %}
           <div class="row">
             <div class="col-md-6 pb-2">
               <label for="farmmerName" class="form-label">ชื่อ - นามสกุล</label>
@@ -104,13 +167,14 @@
               <input type="text" class="form-control" id="farmmerTel" name="farmmerTel" placeholder="กรุณาระบุเบอร์โทรศัพท์" required />
             </div>
           </div>
-        </form>
+      
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-danger" data-bs-dismiss="modal">ยกเลิก</button>
-        <button id="saveFarmerlist" type="button" class="btn btn-primary" >บันทึก</button>
+        <button type="submit" class="btn btn-primary" >บันทึก</button>
         
       </div>
+    </form>
     </div>
   </div>
 </div>
@@ -225,6 +289,40 @@
     </div>
   </div>
 </div>
+<script>
+  // Get the input element and table
+  const filterInput = document.getElementById('filterInput');
+  const dataTable = document.getElementById('myTable');
 
+  // Add an event listener to the input element
+  filterInput.addEventListener('keyup', filterTable);
+
+  function filterTable() {
+      const filterValue = filterInput.value.toLowerCase();
+      const rows = dataTable.getElementsByTagName('tr');
+
+      for (let i = 1; i < rows.length; i++) {
+          const row = rows[i];
+          const cells = row.getElementsByTagName('td');
+          let rowContainsFilter = false;
+
+          for (let j = 0; j < cells.length; j++) {
+              const cell = cells[j];
+              const cellText = cell.textContent.toLowerCase();
+
+              if (cellText.includes(filterValue)) {
+                  rowContainsFilter = true;
+                  break;
+              }
+          }
+
+          if (rowContainsFilter) {
+              row.style.display = ''; // Show rows containing the search term
+          } else {
+              row.style.display = 'none'; // Hide rows that don't contain the search term
+          }
+      }
+  }
+</script>
 
 {% endblock content%}
