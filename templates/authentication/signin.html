@@ -41,7 +41,8 @@
 			<div class="wrap-login100">
 				<form class="login100-form validate-form" method="post" action="/signin">
 					<span class="login100-form-title p-b-43">
-						Water Mellow Web Application
+						<img src="{% static 'assets/images/logo/watermelon_logo.svg' %}" style="width: 4rem;">
+						ระบบบริหารจัดการฟาร์มแตงโม
 					</span>
 						{% csrf_token %}
 						
@@ -49,17 +50,17 @@
 			
 							<input type="text" class="input100" id="username" name="username"  Required>
 							<span class="focus-input100"></span>
-							<span class="label-input100">Username</span>
+							<span class="label-input100">ชื่อผู้ใช้งาน</span>
 						</div>
 						
 						
 						<div class="wrap-input100 validate-input" data-validate="Password is required">
 							<input type="password" class="input100" id="pass1"  name="pass1" Required>
 							<span class="focus-input100"></span>
-							<span class="label-input100">Password</span>
+							<span class="label-input100">รหัสผ่าน</span>
 						</div>
                         <button  type="submit" class="login100-form-btn">
-							Login
+							เข้าสู่ระบบ
 						</button>
 						{% for message in messages %}
 						<div class="mt-2"> <strong>Message:</strong> <span class=" text-danger">{{ message }}</span> </div>
