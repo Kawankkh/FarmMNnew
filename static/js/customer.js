@@ -1,4 +1,4 @@
-function Show_Bill(bill_id){
+﻿function Show_Bill(bill_id){
     sum = 0 ;
     $('#price_H').val(0);
     $('#cost_data').val(0);
@@ -36,18 +36,18 @@ function Show_Bill(bill_id){
 
 
           $('#qty1').text(count_count['H_Qty']);
-          $('#qty2').text(count_count['L_Qty']);
+          $('#qty2').text(count_count['T_Qty']);
           $('#qty3').text(count_count['M_Qty']);
-          $('#qty4').text(count_count['T_Qty']);
+          $('#qty4').text(count_count['L_Qty']);
           $("#cal").trigger("click");
           $('#confirm').text("จ่ายแล้ว");
         }else{
           var count_count= data['list_Production'][0];
      
           $('#qty1').text(count_count['H_Qty']);
-          $('#qty2').text(count_count['L_Qty']);
+          $('#qty2').text(count_count['T_Qty']);
           $('#qty3').text(count_count['M_Qty']);
-          $('#qty4').text(count_count['T_Qty']);
+          $('#qty4').text(count_count['L_Qty']);
           $('#confirm').text("ยังไม่ได้จ่าย");
         }
        
@@ -70,8 +70,8 @@ function Show_Bill(bill_id){
     $('#cost_data').val(0);
     $("#price1").text( $('#qty1').text() * $("#price_H").val());
     $("#price2").text( $('#qty2').text() * $("#price_T").val());
-    $("#price3").text( $('#qty2').text() * $("#price_M").val());
-    $("#price4").text( $('#qty3').text() * $("#price_L").val());
+    $("#price3").text( $('#qty3').text() * $("#price_M").val());
+    $("#price4").text( $('#qty4').text() * $("#price_L").val());
     var total_p = 0;
     total_p = parseInt($("#price1").text()) + parseInt($("#price2").text())+parseInt($("#price3").text())+parseInt($("#price4").text())
     $("#totalPrice").text(total_p);

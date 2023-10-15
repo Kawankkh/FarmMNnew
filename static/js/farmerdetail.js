@@ -1,4 +1,4 @@
-function Show_modal(id,name,Tel){
+﻿function Show_modal(id,name,Tel){
 
 
     $('#EditFarmer').modal("show");
@@ -6,7 +6,7 @@ function Show_modal(id,name,Tel){
     $("#edit_name").val(name);
     $("#edit_Tel").val(Tel);
   }
-
+  const bill_id_re = 0;
   function Show_add(bill_id){
 
     $.ajax({
@@ -43,50 +43,10 @@ function Show_modal(id,name,Tel){
     
     $('#AddExpense').modal("show");
     $("#Add_Bill_id").val(bill_id);
-
+    bill_id_re = bill_id;
   }
 
-  function Show_Production(bill_id){
-
-    $.ajax({
-      url: '/get_Production_bill?Bill_OP='+bill_id, // Replace with your actual endpoint URL
-      type: 'GET',
-      dataType: 'json',
-      success: function (data) {
-        // Clear existing table data
-        $('#TableProductionlist tbody tr:not(:first)').remove();
-        // $('#TableProductionlist tbody').empty();
-        var loop_cnd = 1;
-        // Loop through the JSON data and add rows to the table
-        $.each(data, function (index, item) {
-          console.log(item);
-          var row = '<tr>' +
-          '<td>' + formatDate(item.Production_Date) + '</td>' +
-          '<td>' + item.Car   + '</td>' +
-          '<td>' + item.H_Qty + '</td>' +
-          '<td>' + item.T_Qty + '</td>' +
-          '<td>' + item.M_Qty + '</td>' +
-          '<td>' + item.L_Qty + '</td>' +
-         
-          '<td>' + item.Custormer_name + '</td>' +
-          '<td class="text-center"   style=" font-weight: 700;"><button  type="button" class="btn btn-danger" onclick=delete_product('+ item.Production_Bill_ID +')><i class="fa-solid fa-trash"></i></button></td>' +
-          
-          
-          '</tr>';
-        $('#TableProductionlist').append(row);
-          
-        });
-      },
-      error: function (error) {
-        console.error('Error fetching data:', error);
-      }
-    });
-
-    
-    $('#AddProduce').modal("show");
-    $("#Add_Bill_id_production").val(bill_id);
-
-  }
+ 
 
 
   function formatDate(isoDateString) {
@@ -162,18 +122,18 @@ function Show_modal(id,name,Tel){
 
 
           $('#qty1').text(count_count['H_Qty']);
-          $('#qty2').text(count_count['L_Qty']);
+          $('#qty2').text(count_count['T_Qty']);
           $('#qty3').text(count_count['M_Qty']);
-          $('#qty4').text(count_count['T_Qty']);
+          $('#qty4').text(count_count['L_Qty']);
           $("#cal").trigger("click");
           $('#confirm').text("จ่ายแล้ว");
         }else{
           var count_count= data['list_Production'][0];
      
           $('#qty1').text(count_count['H_Qty']);
-          $('#qty2').text(count_count['L_Qty']);
+          $('#qty2').text(count_count['T_Qty']);
           $('#qty3').text(count_count['M_Qty']);
-          $('#qty4').text(count_count['T_Qty']);
+          $('#qty4').text(count_count['L_Qty']);
         }
        
 
@@ -195,8 +155,8 @@ function Show_modal(id,name,Tel){
     $('#cost_data').val(0);
     $("#price1").text( $('#qty1').text() * $("#price_H").val());
     $("#price2").text( $('#qty2').text() * $("#price_T").val());
-    $("#price3").text( $('#qty2').text() * $("#price_M").val());
-    $("#price4").text( $('#qty3').text() * $("#price_L").val());
+    $("#price3").text( $('#qty3').text() * $("#price_M").val());
+    $("#price4").text( $('#qty4').text() * $("#price_L").val());
     var total_p = 0;
     total_p = parseInt($("#price1").text()) + parseInt($("#price2").text())+parseInt($("#price3").text())+parseInt($("#price4").text())
     $("#totalPrice").text(total_p);

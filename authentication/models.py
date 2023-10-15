@@ -18,8 +18,8 @@ class Product(models.Model):
     product_id = models.AutoField(primary_key=True)
     product_description = models.CharField(max_length=255)
     product_price = models.FloatField()
-    def __str__(self):
-        return self.product_description 
+    # def __str__(self):
+    #     return self.product_id
 class Bill_OP(models.Model):
     Bill_id = models.AutoField(primary_key=True)
     Farmer =models.ForeignKey(Farmer,on_delete=models.CASCADE)

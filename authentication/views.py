@@ -99,7 +99,7 @@ def BillService(request):
         print(bill_op.Bill_id)
         try:
             Exchange_ = Exchange.objects.get(Bill_OP__Farmer__Farmer_id =foarmer_id, iscomplete = False)
-            product = Product.objects.get(product_id=9) 
+            product = Product.objects.get(product_id=13) 
             # bill_OP = Bill_OP.objects.get(Bill_id=bill_op.Bill_id)
             current_datetime = datetime.now()
             print(Exchange_)
@@ -129,6 +129,7 @@ def RemoveFarmLoop(request):
 def AddproducctToLoop(request):
     if request.method == 'POST':
         print(request.POST)
+        res =dict()
         product = Product.objects.get(product_id=request.POST.get('Product_id')) 
         bill_OP = Bill_OP.objects.get(Bill_id=request.POST.get('Add_Bill_id'))
         Order_Bill_ = Order_Bill()
@@ -138,19 +139,22 @@ def AddproducctToLoop(request):
         Order_Bill_.Total_price = int(request.POST.get('Qty')) * int(product.product_price)
         Order_Bill_.Order_Date = request.POST.get('Date')  
         Order_Bill_.save()
-        url = f'farmmerdetail/{bill_OP.Farmer.Farmer_id}'
-        return redirect(url)
+        res['status']  = 'ok'
+        res['billsID'] = bill_OP.Bill_id
+        return JsonResponse(res, safe=False)
     else:
         return redirect('farmmer')
 def RemoveproducctToLoop(request):
     if request.method == 'POST':
         print(request.POST)
         Order_Bill_ = Order_Bill.objects.get(Order_Bill_id=request.POST.get('remove_id'))
+        Bill_Id = Order_Bill_.Bill_OP.Bill_id
         Order_Bill_.delete()
-        return JsonResponse({"data":"ok"}, safe=False)
+        return JsonResponse({"data":"ok","billid":Bill_Id}, safe=False)
     else:
         return redirect('farmmer')
 def get_products_bill(request):
+    print(request.GET)
     bill_op = int(request.GET.get('Bill_OP', None))
     print(bill_op)
     if bill_op > 0:
@@ -221,14 +225,15 @@ def Addproduction(request):
         Production_Bill_.Pay_status = False
         Production_Bill_.Production_Date  =request.POST.get('date')
         Production_Bill_.save()
-        url = f'farmmerdetail/{Bill_OP_.Farmer.Farmer_id}'
-        return redirect(url)
+        return JsonResponse({"billsID":Bill_OP_.Bill_id}, safe=False)
 def Removeproduction(request):
     if request.method == 'POST':
         print(request.POST)
         Production_Bill_ = Production_Bill.objects.get(Production_Bill_ID=request.POST.get('remove_id'))
+        billId = Production_Bill_.Bill_OP.Bill_id
         Production_Bill_.delete()
-        return JsonResponse({"data":"ok"}, safe=False)
+
+        return JsonResponse({"billId":billId}, safe=False)
     else:
         return redirect('farmmer')
 
